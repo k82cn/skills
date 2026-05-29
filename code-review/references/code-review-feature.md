@@ -43,7 +43,7 @@ Set or refine these properties before evaluating defects:
    - Check whether code and components are well organized through existing local
      design patterns, GoF design patterns, architecture, or a focused
      abstraction that reduces real complexity, duplication, or state handling
-     risk. Use `code-style.md` for this check.
+     risk. Use `references/code-style.md` for this check.
    - Avoid suggesting patterns or abstractions that overgeneralize or hide
      important control flow.
 4. Review system behavior:

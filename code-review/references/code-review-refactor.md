@@ -29,7 +29,7 @@ intending to preserve behavior.
    - Check that the refactor does not break existing features, valid inputs,
      callers, or dependent workflows.
    - Check that the refactor simplifies the code or makes it more flexible. Use
-     `code-style.md` for this check.
+     `references/code-style.md` for this check.
    - Check that the refactor has no system impact, including performance,
      security, scalability, concurrency, operational behavior, or resource usage.
    - Check that the refactor introduces no backward compatibility issue.

@@ -37,13 +37,14 @@ message, labels, branch name, or changed files:
 - `review.target`: what the PR is intended to change.
 - `review.motivation`: why the change exists.
 - `review.type`: `feature`, `fix`, or `refactor`.
-- `review.workflow`: workflow reference to load.
+- `review.workflow`: selected type-specific reference path, plus any additional
+  reference paths loaded for material secondary risk.
 
 Load the workflow reference according to `review.workflow`:
 
-- `feature`: read `references/code-review-feature.md`.
-- `fix`: read `references/code-review-fix.md`.
-- `refactor`: read `references/code-review-refactor.md`.
+- `feature`: set `review.workflow` to `references/code-review-feature.md`.
+- `fix`: set `review.workflow` to `references/code-review-fix.md`.
+- `refactor`: set `review.workflow` to `references/code-review-refactor.md`.
 
 If the PR contains multiple kinds of work, identify the primary motivation and
 set `review.type` from that. Note secondary concerns in the review, but do not
