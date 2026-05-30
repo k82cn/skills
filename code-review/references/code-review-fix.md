@@ -13,6 +13,10 @@ Set or refine these properties before evaluating defects:
 - `fix.evidence`: failing test, reproduction steps, issue detail, log, user
   report, or code path proving the mismatch.
 - `fix.expected_behavior`: behavior after implementation and design are aligned.
+- `fix.source_pr`: original PR, commit, release branch change, or upstream patch
+  when the fix is a cherry-pick or backport.
+- `fix.source_equivalence`: whether the cherry-pick or backport matches the
+  original fix exactly.
 
 ## Workflow
 
@@ -31,6 +35,11 @@ Set or refine these properties before evaluating defects:
 3. Review the fix:
    - Check that the MR fixes the original issue and aligns implementation with
      the intended design.
+   - If the fix is labeled, titled, described, or structured as a cherry-pick or
+     backport, identify the original PR or commit and compare the implementation
+     against it. The fix should be exactly the same as the original PR. Treat any
+     code, test, documentation, behavior, or dependency difference as a finding
+     unless the MR explicitly justifies a target-branch compatibility adjustment.
    - Check that the implementation does not break existing features, valid
      inputs, compatibility, or dependent workflows.
    - Check that the implementation only focuses on fixing the issue, without
