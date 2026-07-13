@@ -77,7 +77,8 @@ read-only and reports findings at every severity.
    task's changes. Preserve IDs across passes and never reuse a resolved ID.
 5. Do not fix blocker or high findings without explicit user direction. Treat
    unresolved items that need intent, authority, coordination, or a material
-   decision as open questions and provide a suggested direction.
+   decision as open questions. Assign each a stable, unique ID and provide a
+   suggested direction.
 
 After the loop, show unresolved blocker/high findings, open questions, and any
 medium/low findings left in another contributor's changes. Summarize resolved
@@ -105,6 +106,7 @@ Suggestion: <minimal fix or evidence needed>
 Use this format for each open question:
 
 ```text
+ID: <stable-q-prefixed-kebab-case-id>
 Question: <decision or missing information needed>
 Impacts: <effects on behavior, risk, or implementation>
 Options:
@@ -115,6 +117,9 @@ Recommendation: <preferred option and why>
 
 Never present an open question without two or three distinct options and their
 tradeoffs. Recommend one option when the available evidence supports it; state
-what evidence would decide when no option is clearly preferable.
+what evidence would decide when no option is clearly preferable. Prefix question
+IDs with `q-`, keep them unique across findings and questions, and preserve them
+throughout the review session so the user can reply with
+`<question-id>#<option-number>`, for example `q-cache-policy#2`.
 
 If there are no findings, say so and mention residual risk or verification gaps.

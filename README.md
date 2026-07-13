@@ -12,6 +12,8 @@ Each skill should live in its own directory and include a `SKILL.md` file:
 ```text
 skill-name/
   SKILL.md
+  agents/
+    openai.yaml
   scripts/
   references/
   assets/
@@ -19,6 +21,7 @@ skill-name/
 
 - `SKILL.md` describes when the skill should be used and the workflow Codex
   should follow.
+- `agents/openai.yaml` contains recommended UI metadata and a default prompt.
 - `scripts/` contains helper scripts used by the skill.
 - `references/` contains supporting documentation or examples.
 - `assets/` contains reusable templates, images, or other static files.
@@ -28,10 +31,10 @@ clearer or easier to reuse.
 
 ## Available Skills
 
-- [`code-review`](code-review/SKILL.md): Structured code review workflow for
-  finding defects, regressions, and missing tests from k82cn's distributed
-  systems experience. The entrypoint delegates review execution to shared and
-  type-specific reference workflows.
+- [`code-review`](code-review/SKILL.md): Reviews designs and implementations for
+  behavioral, security, compatibility, concurrency, testing, documentation, and
+  maintainability risks. It routes feature, fix, and refactor reviews to focused
+  guidance and remediates authorized findings within ownership boundaries.
 
 ## Authoring Guidelines
 
