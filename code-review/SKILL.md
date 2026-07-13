@@ -64,9 +64,14 @@ Run this loop only when the user authorizes edits. A review-only request remains
 read-only and reports findings at every severity.
 
 1. Review and assign each confirmed finding a stable, unique ID and severity.
-2. Fix in-scope medium and low findings that do not require a material product,
-   API, compatibility, or design decision. Update focused tests or docs as
-   needed.
+   Determine whether each affected change belongs to the current task or to
+   another contributor from task context, commits, PR authorship, and the
+   pre-existing worktree. Treat uncertain ownership as another contributor's.
+2. Fix medium and low findings only in the current task's changes and only when
+   they do not require a material product, API, compatibility, or design
+   decision. Update focused tests or docs as needed. Do not auto-fix another
+   contributor's changes; report those findings unless the user explicitly
+   selects them for modification.
 3. Verify the fixes and review the updated change again.
 4. Repeat until no actionable medium or low findings remain. Preserve IDs across
    passes and never reuse a resolved ID.
@@ -74,9 +79,9 @@ read-only and reports findings at every severity.
    unresolved items that need intent, authority, coordination, or a material
    decision as open questions.
 
-After the loop, show only unresolved blocker/high findings and open questions.
-Summarize resolved medium/low work and verification without restating those
-findings.
+After the loop, show unresolved blocker/high findings, open questions, and any
+medium/low findings left in another contributor's changes. Summarize resolved
+medium/low work and verification without restating those findings.
 
 ## Output
 
