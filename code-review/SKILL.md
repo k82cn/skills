@@ -73,11 +73,11 @@ read-only and reports findings at every severity.
    contributor's changes; report those findings unless the user explicitly
    selects them for modification.
 3. Verify the fixes and review the updated change again.
-4. Repeat until no actionable medium or low findings remain. Preserve IDs across
-   passes and never reuse a resolved ID.
+4. Repeat until no auto-fixable medium or low findings remain in the current
+   task's changes. Preserve IDs across passes and never reuse a resolved ID.
 5. Do not fix blocker or high findings without explicit user direction. Treat
    unresolved items that need intent, authority, coordination, or a material
-   decision as open questions.
+   decision as open questions and provide a suggested direction.
 
 After the loop, show unresolved blocker/high findings, open questions, and any
 medium/low findings left in another contributor's changes. Summarize resolved
@@ -101,5 +101,20 @@ Location: <file:line|document section|precise artifact location>
 Comment: <failure mode, impact, and evidence>
 Suggestion: <minimal fix or evidence needed>
 ```
+
+Use this format for each open question:
+
+```text
+Question: <decision or missing information needed>
+Impacts: <effects on behavior, risk, or implementation>
+Options:
+1. <option and tradeoff>
+2. <option and tradeoff>
+Recommendation: <preferred option and why>
+```
+
+Never present an open question without two or three distinct options and their
+tradeoffs. Recommend one option when the available evidence supports it; state
+what evidence would decide when no option is clearly preferable.
 
 If there are no findings, say so and mention residual risk or verification gaps.
