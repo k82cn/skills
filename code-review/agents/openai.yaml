@@ -1,4 +1,4 @@
 interface:
   display_name: "Code Review"
-  short_description: "k82cn distributed systems review"
-  default_prompt: "Use $code-review to review this change for bugs, regressions, and missing tests."
+  short_description: "Review designs and code, then fix safe findings"
+  default_prompt: "Use $code-review to review this design or implementation and remediate authorized findings."

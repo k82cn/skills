@@ -1,35 +1,17 @@
-# Code Review Refactor Workflow
+# Refactor Review
 
-Use when `review.type` is `refactor`: the PR changes code structure while
-intending to preserve behavior.
+Use when structure changes while behavior should remain stable.
 
-## Properties
+## Establish
 
-- `refactor.target`: structure, abstraction, ownership, or readability problem
-  the PR addresses.
-- `refactor.invariant`: behavior, API, schema, performance, or error semantics
-  that must remain unchanged.
-- `refactor.surface`: modules, callers, tests, and public contracts affected by
-  the move or rewrite.
+- Structural problem and intended improvement.
+- Affected modules, callers, tests, and public contracts.
+- Invariants: behavior, API, schema, errors, performance, and compatibility.
 
-## Workflow
+## Check
 
-1. Review, identify, and clarify the feature and scope the MR is intended to
-   refactor.
-   - Identify the modules, callers, tests, and public contracts affected by the
-     refactor.
-   - Identify the behavior, API, schema, performance, error semantics, and
-     compatibility expectations that must remain unchanged.
-2. Check MR completeness. The MR should include implementation and unit tests
-   when the refactor touches behavior-sensitive paths or public contracts.
-   - Check that tests preserve the expected behavior instead of only matching
-     new internals.
-3. Review the refactor:
-   - Check that the MR refactors code without changing behavior.
-   - Check that the refactor does not break existing features, valid inputs,
-     callers, or dependent workflows.
-   - Check that the refactor simplifies the code or makes it more flexible. Use
-     `references/code-style.md` for this check.
-   - Check that the refactor has no system impact, including performance,
-     security, scalability, concurrency, operational behavior, or resource usage.
-   - Check that the refactor introduces no backward compatibility issue.
+- Preserve every invariant and valid input path.
+- Simplify ownership, structure, or extension; apply `code-style.md`.
+- Keep tests focused on behavior rather than new internals.
+- Avoid performance, security, scalability, concurrency, operational, or
+  resource-use regressions.

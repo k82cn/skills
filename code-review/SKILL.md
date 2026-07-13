@@ -1,152 +1,100 @@
 ---
 name: code-review
-description: Structured code review workflow based on k82cn's distributed systems experience, first understanding the target and motivation of a change, then routing to feature, fix, or refactor review workflows to find bugs, regressions, security issues, API or data contract problems, concurrency and lifecycle hazards, missing tests, and missing documentation updates. Use when the user asks to review code, review a pull request, inspect a diff or patch, assess recent changes, evaluate implementation risk, or provide review comments rather than directly implementing a change.
+description: Review designs and code, then remediate authorized findings. Use for architecture proposals, technical specifications, implementations, pull requests, commits, diffs, patches, implementation-risk assessments, review comments, and iterative review-and-fix requests. Finds behavioral, security, compatibility, concurrency, lifecycle, testing, documentation, and maintainability problems using feature, fix, or refactor workflows.
 ---
 
 # Code Review
 
-## Overview
+Find concrete defects and risks. Understand the change before judging it.
 
-Review code as a defect-finding pass, not as a general commentary exercise.
-Start by understanding what the change is trying to accomplish and why.
-Prioritize concrete behavioral risks with file and line references, then mention
-unit test, documentation, or residual uncertainty gaps.
+## Workflow
 
-## Workflow Properties
+1. Identify the review target and read its supporting context: request, design,
+   issue, PR description, commits, tests, and nearby documentation.
+2. State the target, motivation, intended behavior, non-goals, and important
+   compatibility constraints. Ask only when missing intent materially blocks the
+   review.
+3. Classify the primary change and read its reference:
+   - `feature`: new capability or behavior. Read
+     `references/code-review-feature.md`.
+   - `fix`: alignment with an existing design, issue, or contract. Read
+     `references/code-review-fix.md`.
+   - `refactor`: structure changes that should preserve behavior. Read
+     `references/code-review-refactor.md`.
+4. Read `references/code-style.md` for every design and implementation review.
+5. Inspect the complete change and verify uncertain behavior with focused tests,
+   type checks, or reproductions when practical.
+6. If edits are authorized, run the remediation loop before reporting results.
 
-Before deep review, classify the PR into exactly one review workflow whenever
-possible:
+Use a conventional PR title as a classification hint: normalize `feat` to
+`feature`; otherwise classify from the change's motivation. Load another
+workflow only when a secondary change creates material risk.
 
-- `feature`: new function, capability, public behavior, API, command,
-  configuration, integration, or user workflow.
-- `fix`: align the implementation to the intended design, specification, issue,
-  expected behavior, or documented contract.
-- `refactor`: code refactor that should preserve behavior while improving
-  structure, ownership, readability, or maintainability.
+## Review Standards
 
-When a PR title follows `<type>([optional scope]): <description>`, use it as a
-classification hint. Normalize `feat` to `feature`. Ignore other title types as
-workflow names and classify from the target and motivation instead.
-
-Set these properties from the PR title, user request, PR body, issue, commit
-message, labels, branch name, or changed files:
-
-- `pr.title.type`: parsed PR title type, when present.
-- `pr.title.scope`: optional parsed scope, when present.
-- `pr.title.description`: parsed title description, when present.
-- `review.target`: what the PR is intended to change.
-- `review.motivation`: why the change exists.
-- `review.type`: `feature`, `fix`, or `refactor`.
-- `review.workflow`: selected type-specific reference path, plus any additional
-  reference paths loaded for material secondary risk.
-
-Load the workflow reference according to `review.workflow`:
-
-- `feature`: set `review.workflow` to `references/code-review-feature.md`.
-- `fix`: set `review.workflow` to `references/code-review-fix.md`.
-- `refactor`: set `review.workflow` to `references/code-review-refactor.md`.
-
-If the PR contains multiple kinds of work, identify the primary motivation and
-set `review.type` from that. Note secondary concerns in the review, but do not
-load unrelated workflows unless the secondary change materially affects risk.
-
-If `review.type` is unclear, infer conservatively from PR metadata and changed
-behavior. Ask a clarifying question only when the target or motivation cannot be
-discovered and that uncertainty would materially affect the review.
-
-## Entrypoint Workflow
-
-1. Identify the review target: branch diff, PR, commit, staged changes, file list,
-   or pasted code.
-2. Understand the target and motivation before judging the implementation. Read
-   the user request, PR title/body, issue, design note, commit message, or nearby
-   discussion to identify the intended behavior, non-goals, and success criteria.
-3. Set `review.type` to `feature`, `fix`, or `refactor`, then load the matching
-   workflow reference before continuing.
-4. Read the primary type-specific workflow reference:
-   - `feature`: `references/code-review-feature.md`
-   - `fix`: `references/code-review-fix.md`
-   - `refactor`: `references/code-review-refactor.md`
-5. Load an additional type-specific workflow reference when a secondary change
-   materially affects risk.
-6. Delegate type-specific review execution and checks to the loaded references.
-7. When reviewing code organization, design patterns, or refactoring quality,
-   also read `references/code-style.md`.
-8. Apply the common standards, severity, and output format below.
-
-## Common Standards
-
-- Treat review as evidence-based. Every finding should cite the changed file and
-  line, explain the failure mode, and state why it matters.
-- Anchor the review in the change's target and motivation. Avoid rejecting an
-  implementation for not doing work outside the stated goal unless that omission
-  creates a real risk.
-- Avoid low-signal style comments unless style creates ambiguity, bugs, or
-  maintenance risk in the touched code.
-- Do not request changes for hypothetical rewrites when the current approach is
-  sound.
-- Distinguish confirmed issues from questions, assumptions, and optional
-  improvements.
-- Prefer local project conventions over generic preferences.
-- Consider backwards compatibility for public APIs, schemas, CLIs, config files,
-  data formats, and user-visible behavior.
-- Treat missing or stale unit tests as a review finding when the change affects
-  behavior, contracts, or risk-sensitive paths.
-- Treat missing or stale docs as a review finding when users, operators,
-  integrators, or future maintainers need updated guidance to use the change
-  correctly.
-- For generated code, lockfiles, vendored code, or bulk formatting changes,
-  review the generator/source of truth when possible.
-- When a finding depends on runtime behavior, try to verify it with tests,
-  typechecks, focused commands, or minimal reproduction steps.
+- Tie every finding to evidence, a precise source location, a failure mode, and
+  user or system impact.
+- Stay within the stated goal unless an omission creates real risk.
+- Prefer project conventions over generic preferences.
+- Check public APIs, schemas, CLIs, configuration, data formats, and visible
+  behavior for compatibility.
+- Check behavior changes and risk-sensitive paths for adequate tests.
+- Check user, operator, integrator, and maintainer documentation when behavior
+  or workflows change.
+- Review the source of truth for generated, vendored, lockfile, or bulk-format
+  changes when possible.
+- Separate confirmed findings from questions and optional improvements.
+- Do not report style preferences or speculative rewrites without concrete risk.
 
 ## Severity
 
-- Blocker: change can corrupt data, expose secrets, break builds, prevent core
-  workflows, or create a severe security issue.
-- High: likely user-visible regression, production failure, incorrect result,
-  migration problem, or important missing validation.
-- Medium: plausible edge-case failure, degraded reliability, compatibility
-  hazard, or meaningful missing test coverage.
-- Low: minor issue worth fixing but unlikely to break users.
+- `Blocker`: severe security exposure, data corruption, broken builds, or a core
+  workflow that cannot operate.
+- `High`: likely production failure, user-visible regression, wrong result,
+  migration failure, or important missing validation.
+- `Medium`: plausible edge-case failure, reliability degradation, compatibility
+  hazard, meaningful test gap, or maintainability risk.
+- `Low`: worthwhile minor issue unlikely to break users.
 
-Do not inflate severity. If impact is uncertain, say what evidence would confirm
-it.
+Do not inflate severity. State what evidence is missing when impact is uncertain.
 
-## Output Format
+## Remediation Loop
 
-Use this order:
+Run this loop only when the user authorizes edits. A review-only request remains
+read-only and reports findings at every severity.
+
+1. Review and assign each confirmed finding a stable, unique ID and severity.
+2. Fix in-scope medium and low findings that do not require a material product,
+   API, compatibility, or design decision. Update focused tests or docs as
+   needed.
+3. Verify the fixes and review the updated change again.
+4. Repeat until no actionable medium or low findings remain. Preserve IDs across
+   passes and never reuse a resolved ID.
+5. Do not fix blocker or high findings without explicit user direction. Treat
+   unresolved items that need intent, authority, coordination, or a material
+   decision as open questions.
+
+After the loop, show only unresolved blocker/high findings and open questions.
+Summarize resolved medium/low work and verification without restating those
+findings.
+
+## Output
+
+Order the response as follows:
 
 1. Findings, highest severity first.
-2. Open questions or assumptions, including unclear target or motivation.
-3. Brief summary, only after findings.
-4. Tests, docs, or verification checked, including anything not run or not
-   present.
+2. Open questions or assumptions.
+3. Brief summary.
+4. Tests, docs, and verification checked or not run.
 
-Use this template for each finding:
+Use this format for each finding:
 
 ```text
-ID: <short-stable-name>
+ID: <stable-kebab-case-id>
 Severity: <Blocker|High|Medium|Low>
-Location: <file:line>
-Comment: <concrete failure mode, why it matters, and the evidence from the diff>
-Suggestion: <minimal fix direction, test/doc update, or verification step>
+Location: <file:line|document section|precise artifact location>
+Comment: <failure mode, impact, and evidence>
+Suggestion: <minimal fix or evidence needed>
 ```
 
-- Use a short kebab-case `ID` that names the issue, such as
-  `stale-leader-cache` or `missing-retry-test`.
-- Keep IDs unique and stable for the entire review session so follow-up feedback
-  can reference them without ambiguity. Do not reuse an ID for a different
-  finding, even across later review updates in the same session.
-- Keep `Comment` focused on the review finding, not general explanation.
-- Keep `Suggestion` actionable. If no fix is obvious, state the evidence needed
-  to decide safely.
-- Do not include findings that cannot be tied to a concrete risk.
-
-If there are no findings, say so directly and mention residual risk or test gaps.
-
-## When Asked To Fix
-
-If the user asks to both review and fix issues, review first, then implement only
-the confirmed fixes that are in scope. Avoid sweeping refactors unless they are
-needed to resolve a finding safely.
+If there are no findings, say so and mention residual risk or verification gaps.
